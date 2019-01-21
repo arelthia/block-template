@@ -1,8 +1,11 @@
-var webpack = require('webpack');
-module.exports = {
-	entry: './block.js',
+let webpack = require( 'webpack' );
+const path = require('path');
+
+NODE_ENV = process.env.NODE_ENV || 'development';
+webpackConfig = {
+	entry: './admin/js/src/block.js',
 	output: {
-		path: __dirname,
+		path: path.resolve(__dirname, 'admin/js/src'),
 		filename: 'block.build.js',
 	},
 	module: {
@@ -15,15 +18,14 @@ module.exports = {
 		],
 	},
 	plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: false,
-      }
-    }),
-   /* new ExtractTextPlugin({
-      filename: 'build.min.css',
-      allChunks: true,
-    }),*/
-  ]
+		new webpack.DefinePlugin( {
+			'process.env.NODE_ENV': JSON.stringify( NODE_ENV ),
+		} ),
+	]
 };
+
+if ( 'production' === NODE_ENV ) {
+	webpackConfig.plugins.push( new webpack.optimize.UglifyJsPlugin() );
+}
+
+module.exports = webpackConfig;
